@@ -6,6 +6,15 @@ using System.Management.Automation.Runspaces;
 using System.Text;
 using System.Windows.Forms;
 
+/*
+ *  Git Requirements to push
+ * 
+ *   PM> git config --global http.proxy http://domain\-A:-A Password@URL:80
+ *   PM> git config --global http.sslVerify false
+ *   git config --global http.sslVerify true
+ * 
+ */
+
 
 namespace SACTicketFormatter3._0
 {
@@ -620,7 +629,8 @@ namespace SACTicketFormatter3._0
 
         private void save5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveMethod("Save 1", save5ToolStripMenuItem, loadToolStripMenuItem1);
+            //Fixed in 3.3.03
+            SaveMethod("Save 5", save5ToolStripMenuItem, loadToolStripMenuItem1);
         }
 
         private void load1ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -677,6 +687,8 @@ namespace SACTicketFormatter3._0
             Saves.Write("MirroredLastName", tb_mirrorLast.Text, SaveIndex);
             Saves.Write("MirroredID", tb_mirrorID.Text, SaveIndex);
             Saves.Write("MirroredEmail", tb_mirrorEmail.Text, SaveIndex);
+            //Patch 3.3.03 Password Save
+            Saves.Write("Password", genPassword, SaveIndex);
         }
         private void LoadMethod(string LoadIndex)
         {
@@ -692,6 +704,8 @@ namespace SACTicketFormatter3._0
             tb_mirrorLast.Text = Saves.Read("MirroredLastName", LoadIndex);
             tb_mirrorID.Text = Saves.Read("MirroredID", LoadIndex);
             tb_mirrorEmail.Text = Saves.Read("MirroredEmail", LoadIndex);
+            //Patch 3.3.03 Password Save
+            genPassword = Saves.Read("Password", LoadIndex);
         }
 
         private void Form1_Load(object sender, EventArgs e)

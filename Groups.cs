@@ -23,7 +23,7 @@ namespace SACTicketFormatter3._0
         public string[] temp2;
         private string user;
         private string prim_userid;
-        private SecureString aPassword;
+        private string aPassword;
 
         //** OVERRIDES **
         public override bool AllowDrop { get => base.AllowDrop; set => base.AllowDrop = value; }
@@ -112,7 +112,7 @@ namespace SACTicketFormatter3._0
         }
 
         //Honestly, I don't know why C# wanted me to add this, if someone from the furture can explain that would be much appreciated.
-        public Groups(string[] temp, string[] temp2, string user, string prim_userid, SecureString aPassword, IContainer components, DataGridView dataGridView1, DataGridViewTextBoxColumn group, Button button1, Label label1, TextBox tbUsername, Label label2, TextBox tbAUsername, TextBox tbAPassword, Label label3, Label label4)
+        public Groups(string[] temp, string[] temp2, string user, string prim_userid, string aPassword, IContainer components, DataGridView dataGridView1, DataGridViewTextBoxColumn group, Button button1, Label label1, TextBox tbUsername, Label label2, TextBox tbAUsername, TextBox tbAPassword, Label label3, Label label4)
         {
             this.temp = temp ?? throw new ArgumentNullException(nameof(temp));
             this.temp2 = temp2 ?? throw new ArgumentNullException(nameof(temp2));
@@ -143,14 +143,15 @@ namespace SACTicketFormatter3._0
         
         private void button1_Click_1(object sender, EventArgs e)
         {
-            aPassword = SecurityCheck.ConvertToSecureString(tbAPassword.Text);
+            aPassword = tbAPassword.Text;
             string username = "";
-            string aUsername = "snaponglobal\x5C" + tbAUsername.Text;
+            string aUsername = tbAUsername.Text;
             
-            PSCredential cred = new PSCredential(aUsername, aPassword);
+            //PSCredential cred = new PSCredential(aUsername, aPassword);
             username = tbUsername.Text;
             int i = 0;
             int counter = 0;
+            List<string> notAdded = new List<string>();
             string[] temp3 = new string[temp.Length];
             for(int g= 0; g<temp.Length; g++)
             {
@@ -161,9 +162,15 @@ namespace SACTicketFormatter3._0
                     temp[g] == "O365E1" ||
                     temp[g] == "O365E3" ||
                     temp[g] == "O365E5" ||
-                    temp[g] == "O365Migrated")
+                    temp[g] == "O365Migrated" ||
+                    temp[g] == "Migrated" ||
+                    temp[g] == "Citrix Users" || 
+                    temp[g].Contains("<") || 
+                    temp[g].Contains(">") ||
+                    temp[g] == null)
                 {
-                    Console.WriteLine("Group: " + temp[g] + " is not Available to Add");
+                    Console.WriteLine("Group: " + temp[g] + " is not Available to Add");   
+                    notAdded.Add(temp[g]);  //Added in 3.3.03
                 }
                 else
                 {
@@ -171,6 +178,8 @@ namespace SACTicketFormatter3._0
                     counter++;
                 }
             }
+            dataGridView1.Columns.Add("NotAdded", "Not Added");
+            
 
             using (var runspace = RunspaceFactory.CreateRunspace())
             {
@@ -184,13 +193,18 @@ namespace SACTicketFormatter3._0
                         string script = @"Invoke-Command -ScriptBlock{$Username = '"+ aUsername +"';$Password = '" + aPassword + "';" +
                             "$Pass = ConvertTo-SecureString $Password -AsPlainText -Force;" +
                             "$Cred = New-Object System.Management.Automation.PSCredential -ArgumentList $Username,$Pass; " +
-                            "Add-ADPrincipalGroupMembership -Identity "+ username +" -MemberOf " + temp3[i]+"}";
+                            "Add-ADPrincipalGroupMembership -Identity "+ username +" -MemberOf " + temp3[i]+ " -Credential $Cred }";
 
-                        //start powershell script
-                        powerShell.AddScript(script);
-                        powerShell.Invoke();
-                        Console.WriteLine("Script Run.");
-                    }        
+                        try
+                        {
+                            //start powershell script
+                            Console.WriteLine("Adding Group: " + temp3[i]); //Added in 3.3.03
+                            powerShell.AddScript(script);
+                            powerShell.Invoke();
+                            Console.WriteLine("Script Run.");
+                        }catch (Exception ex) { Console.WriteLine(ex.ToString()); dataGridView1.Rows.Add(temp3[i]); } 
+                    } 
+                    Console.WriteLine("Finished");
                 }
             }
         }
