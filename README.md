@@ -67,3 +67,7 @@ v3.3.03 (Test Build)
 - SAC Ticket Group adder almost finished
 - Passwords will now save
 - Save 5 now Saves to Save 5
+
+v3.3.04 (Test Build)
+- SAC Ticket Group adder works, but not well, adds some groups
+- CCM Application Added
