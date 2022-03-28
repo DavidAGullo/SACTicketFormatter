@@ -375,10 +375,17 @@ namespace SACTicketFormatter3._0
             listBox3.Items.Add("CPS");
             listBox3.Items.Add("Catia");
             listBox3.Items.Add("Autoplot");
-            
+            listBox3.Items.Add("CCM"); // Added in 3.3.04
         }
         private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        {   /*
+             *  In order to add a new Application you must
+             *  1. Add a new Item in Listbox3
+             *  2. Add a new strContext
+             *  3. Add a what it should say in the strContext
+             *  4. Add a Case that also includes what the Support Team is
+             */
+
             string jobdepartment;
             if(tb_job.TextLength>0 && tb_Department.TextLength >1)
             {
@@ -396,6 +403,7 @@ namespace SACTicketFormatter3._0
             strContext[8] = "New associate " + listBox1.Items[0] + jobdepartment + ". Needs access to CPS. Their permissions should mirror existing employee " + listBox1.Items[3] + " do you approve of adding " + listBox1.Items[0] + " to the group(s):";
             strContext[9] = "New associate " + listBox1.Items[0] + jobdepartment + ". Needs access to Catia. Their permissions should mirror existing employee " + listBox1.Items[3] + " do you approve of adding " + listBox1.Items[0] + " to the group(s):";
             strContext[10] = "New associate " + listBox1.Items[0] + jobdepartment + ". Needs access to Autoplot. Their permissions should mirror existing employee " + listBox1.Items[3] + " do you approve of adding " + listBox1.Items[0] + " to the group(s):";
+            strContext[11] = "Please add user access to CCM: " + listBox1.Items[0] + " | Mirror User: " + listBox1.Items[3] + "\n\nUser is Posix enabled."; // Added in 3.3.04
             int index = listBox3.SelectedIndex + 1;
             switch (index)
             {
@@ -451,6 +459,12 @@ namespace SACTicketFormatter3._0
                     break;
                 case 11:
                     supTeam = "Autoplot";
+                    CopyClipboard(index - 1);
+                    tb_copy.Text = strContext[index - 1];
+                    break;
+                case 12:
+                    // Added in 3.3.04
+                    supTeam = "CCM Admin";
                     CopyClipboard(index - 1);
                     tb_copy.Text = strContext[index - 1];
                     break;
