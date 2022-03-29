@@ -207,6 +207,10 @@ namespace SACTicketFormatter3._0
                     Console.WriteLine("Finished");
                 }
             }
+            // Due to errors with Adder, it doesn't fully work yet, using this so I can make a Release build
+            // This is for Release 3.3.1
+            MessageBox.Show("Please Remember to double check in AD, This Feature is in Beta still.", "IMPORTANT"); //Added in v3.3.1
+            
         }
 
         public override bool Equals(object obj)
