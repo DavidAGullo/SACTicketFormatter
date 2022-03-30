@@ -623,7 +623,7 @@ namespace SACTicketFormatter3._0
         // SAVE SLOTS
         private void save1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveMethod("Save 1", save1ToolStripMenuItem, load1ToolStripMenuItem);
+            SaveMethod("Save 1", save1ToolStripMenuItem, load1ToolStripMenuItem); //
         }
 
         private void save2ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -777,6 +777,37 @@ namespace SACTicketFormatter3._0
         {
             Form1 newPage = new Form1();
             newPage.Show();
+        }
+
+        //Added in 3.3.05
+        private void ClearSave(string Index)
+        {
+            string SaveIndex = Index;
+            string Name = Index;
+            Saves.Write("SaveName", Name, SaveIndex);
+            Saves.Write("SacTicket", "", SaveIndex);
+            Saves.Write("PrimaryFirstName", "", SaveIndex);
+            Saves.Write("PrimaryLastName", "", SaveIndex);
+            Saves.Write("PrimaryID", "", SaveIndex);
+            Saves.Write("PrimarySNum", "", SaveIndex);
+            Saves.Write("Department", "", SaveIndex);
+            Saves.Write("PrimaryEmail", "", SaveIndex);
+            Saves.Write("PrimaryEmail2", "", SaveIndex);
+            Saves.Write("MirroredFirstName", "", SaveIndex);
+            Saves.Write("MirroredLastName", "", SaveIndex);
+            Saves.Write("MirroredID", "", SaveIndex);
+            Saves.Write("MirroredEmail", "", SaveIndex);
+            Saves.Write("Password", "", SaveIndex);
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Clears all the slots for Saves 1-5
+            ClearSave("Save 1");
+            ClearSave("Save 2");
+            ClearSave("Save 3");
+            ClearSave("Save 4");
+            ClearSave("Save 5");
         }
     }
 }
