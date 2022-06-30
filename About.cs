@@ -30,7 +30,7 @@ namespace SACTicketFormatter3._0
              * 
              */
             lbAbout.Text = "SAC Ticket Formatter Tool \n";
-            lbAbout.Text += "Version: 3.3.1 \n";
+            lbAbout.Text += "Version: 3.3.05 \n";
             lbAbout.Text += "Created by: David Gullo \n"; //Feel free to add yourself to this project, if you contribute anything to this
         }
 

@@ -493,7 +493,8 @@ namespace SACTicketFormatter3._0
             {
                 requester = tb_RequesterEmail.Text;
             }
-            string body = ("Below you will find the ID And password that has been created for this request. Please have the new user change the password by using the password provided below to log into the following site: https://qpss.snapon.com/pmuser there they will be prompted to enter a new one.%0d%0a%0d%0a" +
+            //Update 
+            string body = ("Below you will find the ID And password that has been created for this request. Please have the new user change the password by using the password provided below to log into the following site: https://qpss.snapon.com/. There they will be prompted to enter a new one.%0d%0a%0d%0a" +
                                 "E-mail Address: " + tb_primEmail.Text + "%0d%0a" +
                                 "Username: " + tb_primID.Text + "%0d%0a" +
                                 "Password: " + genPassword + "%0d%0a%0d%0a" +
