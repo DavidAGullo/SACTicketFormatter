@@ -376,6 +376,7 @@ namespace SACTicketFormatter3._0
             listBox3.Items.Add("Catia");
             listBox3.Items.Add("Autoplot");
             listBox3.Items.Add("CCM"); // Added in 3.3.04
+            listBox3.Items.Add("Cloud Email"); // Added in 3.3.11
         }
         private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
         {   /*
@@ -404,6 +405,7 @@ namespace SACTicketFormatter3._0
             strContext[9] = "New associate " + listBox1.Items[0] + jobdepartment + ". Needs access to Catia. Their permissions should mirror existing employee " + listBox1.Items[3] + " do you approve of adding " + listBox1.Items[0] + " to the group(s):";
             strContext[10] = "New associate " + listBox1.Items[0] + jobdepartment + ". Needs access to Autoplot. Their permissions should mirror existing employee " + listBox1.Items[3] + " do you approve of adding " + listBox1.Items[0] + " to the group(s):";
             strContext[11] = "Please add user access to CCM: " + listBox1.Items[0] + " | Mirror User: " + listBox1.Items[3] + "\n\nUser is Posix enabled."; // Added in 3.3.04
+            strContext[12] = "Please enable the Cloud mailbox for New Hire: " + listBox1.Items[0] + " License has been applied in AD";
             int index = listBox3.SelectedIndex + 1;
             switch (index)
             {
@@ -468,6 +470,12 @@ namespace SACTicketFormatter3._0
                     CopyClipboard(index - 1);
                     tb_copy.Text = strContext[index - 1];
                     break;
+                case 13:
+                    // Added in 3.3.11
+                    supTeam = "Email Admin";
+                    CopyClipboard(index - 1);
+                    tb_copy.Text = strContext[index - 1];
+                    break;
                 default:
                     CopyClipboard(index - 1);
                     break;
@@ -488,23 +496,31 @@ namespace SACTicketFormatter3._0
 
         private void button4_Click(object sender, EventArgs e)
         {
-            string requester = "user@example.com";
-            if (tb_RequesterEmail.Text.Contains("@"))
+            DialogResult res = MessageBox.Show("Did the email Subtask Complete?.", "Wait!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (res == DialogResult.Yes)
             {
-                requester = tb_RequesterEmail.Text;
+                string requester = "user@example.com";
+                if (tb_RequesterEmail.Text.Contains("@"))
+                {
+                    requester = tb_RequesterEmail.Text;
+                }
+                //Update 
+                string body = ("Below you will find the ID And password that has been created for this request. Please have the new user change the password by using the password provided below to log into the following site: https://qpss.snapon.com/. There they will be prompted to enter a new one.%0d%0a%0d%0a" +
+                                    "E-mail Address: " + tb_primEmail.Text + "%0d%0a" +
+                                    "Username: " + tb_primID.Text + "%0d%0a" +
+                                    "Password: " + genPassword + "%0d%0a%0d%0a" +
+                                    "If you experience problems logging in, please respond to this e-mail or contact the corporate help desk at: (800)762-7638. %0d%0a" +
+                                    "Please allow 24 hours for all access to replicate."
+                              );
+
+
+
+                System.Diagnostics.Process.Start("mailto:" + requester + "?cc=" + tb_primEmail.Text + "&subject=New Hire - " + listBox1.Items[0] + "&body=" + body);
             }
-            //Update 
-            string body = ("Below you will find the ID And password that has been created for this request. Please have the new user change the password by using the password provided below to log into the following site: https://qpss.snapon.com/. There they will be prompted to enter a new one.%0d%0a%0d%0a" +
-                                "E-mail Address: " + tb_primEmail.Text + "%0d%0a" +
-                                "Username: " + tb_primID.Text + "%0d%0a" +
-                                "Password: " + genPassword + "%0d%0a%0d%0a" +
-                                "If you experience problems logging in, please respond to this e-mail or contact the corporate help desk at: (800)762-7638. %0d%0a" +
-                                "Please allow 24 hours for all access to replicate."
-                          );
-
-
-
-            System.Diagnostics.Process.Start("mailto:"+requester+"?cc="+tb_primEmail.Text+ "&subject=New Hire - " + listBox1.Items[0] + "&body="+body);
+            if (res == DialogResult.No)
+            {
+                MessageBox.Show("Please wait for email subtask to be finished.");
+            }
         }
         //End Email
 
@@ -809,6 +825,19 @@ namespace SACTicketFormatter3._0
             ClearSave("Save 3");
             ClearSave("Save 4");
             ClearSave("Save 5");
+        }
+
+        private void tb_mirrorEmail_MouseHover(object sender, EventArgs e)
+        {
+            //Added in 
+            ToolTip emailcc = new ToolTip();
+            emailcc.AutoPopDelay = 20000;
+            emailcc.InitialDelay = 1000;
+            emailcc.ReshowDelay = 1000;
+            emailcc.ShowAlways = true;
+
+            //Adds to Textbox
+            emailcc.SetToolTip(this.tb_mirrorEmail, "This box will generate the CC in the Email, add more by inserting semi-colons ;");
         }
     }
 }
